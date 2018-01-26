@@ -1,36 +1,34 @@
+import { ToastController } from "ionic-angular";
+
 export class ErrorChecker {
-    static getErrorMessage(error) {
+    public static getErrorMessage(error, toastCtlr: ToastController) {
         console.log(error)
         
         let error_message = ''
 
-        if (error.hasOwnProperty('status')) {
+        if (error.hasOwnProperty('status'))
             error_message = this.getStatusCodeErrorMessage(error)
-        } else {
+        else
             error_message = 'Ocorreu um erro inesperado'
-        }
+
+        toastCtlr.create({
+            message: error_message,
+            position: 'top',
+            duration: 3000
+        }).present()
 
         return error_message
     }
 
     private static getStatusCodeErrorMessage(error) {
-        let errorMessage = 'Não foi possível se conectar'
-    
-        if (error.status == '401') {
-            errorMessage = 'Usuário não possui permissão para acessar o recurso'
-        }
+        let errorMessage = ''
 
-        if (error.status == '404') {
-            errorMessage = 'Não foi possível encontrar o servidor'
-        }
-          
-        if (error.status == '422') {
-            errorMessage = 'Não foi possível prosseguir com a requisição'
-        }
-      
-        if (error.status == '500') {
-            errorMessage = 'Ocorreu um erro inesperado'
-        }
+        errorMessage = (error.status == 401) ? 'Usuário não possui permissão para acessar o recurso' : errorMessage;
+        errorMessage = (error.status == 404) ? 'Não foi possível encontrar o servidor' : errorMessage;
+        errorMessage = (error.status == 422) ? 'Não foi possível prosseguir com a requisição' : errorMessage;
+        errorMessage = (error.status == 500) ? 'Ocorreu um erro inesperado' : errorMessage;
+        
+        errorMessage = (errorMessage == '') ? 'Não foi possível se conectar': errorMessage;
 
         return errorMessage
     }

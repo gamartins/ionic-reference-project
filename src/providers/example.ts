@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { HttpClient, HttpEvent } from '@angular/common/http';
 
 import { HttpFactory } from '../util/HttpFactory';
 
@@ -13,10 +13,9 @@ export class ExampleProvider {
 
   private apiUrl: string = environment.apiUrl
   private apiToken: string = ''
-  private routeAuth: string = 'auth'
   private routeUsers: string = 'users'
 
-  constructor(public http: Http) {}
+  constructor(public http: HttpClient) {}
 
   private getAuthenticatedRequestOption() {
     const requestOptions = HttpFactory.getRequestOptions({
@@ -27,24 +26,28 @@ export class ExampleProvider {
   }
 
   private createRequest(url: string, method: string, body?) {
-    const requestOptions = this.getAuthenticatedRequestOption()
-    let request: Observable<Response> = null
+    const headers = this.getAuthenticatedRequestOption()
+    let request: Observable<HttpEvent<any>> = null
+    
+    // Get the full response
+    // headers['observe'] = 'response'
 
     switch (method) {
       case 'get':
-        request = this.http.get(url, requestOptions)
+        request = this.http.get<any>(url, headers)
+        request = this.http.get<any>(url, headers)
         break
 
       case 'post':
-        request = this.http.post(url, body, requestOptions)
+        request = this.http.post<any>(url, body, headers)
         break
 
       case 'put':
-        request = this.http.put(url, body, requestOptions)
+        request = this.http.put<any>(url, body, headers)
         break
       
       case 'delete':
-        request = this.http.delete(url, requestOptions)
+        request = this.http.delete<any>(url, headers)
         break
     
       default:
@@ -54,37 +57,12 @@ export class ExampleProvider {
     
     const promise = new Promise((resolve, reject) => {
       request.subscribe(
-        data => resolve(data.json()),
+        data => resolve(data),
         error => reject(error)
       )
     })
 
     return promise
-  }
-
-  public signin(email, password) {
-    const requestOptions = HttpFactory.getRequestOptions()
-    
-    const body = JSON.stringify({ email: email, password: password })
-    // const body = new URLSearchParams()
-    // body.append('email',email)
-    // body.append('password',password)
-
-    const promise = new Promise((resolve,reject) => {
-      this.http.post(this.apiUrl + this.routeAuth, body, requestOptions)
-      .map(res => {
-        const data = res.json()
-        this.apiToken = data.token
-        return data
-      })
-      .subscribe(
-        data => resolve(data),
-        err => reject(err)
-      )
-    })
-
-    return promise
-
   }
 
   public getRequest() {
@@ -94,6 +72,8 @@ export class ExampleProvider {
   }
 
   public postRequest(user) {
+    // Using x-www-form...
+    // const userParams = new HttpParams().set('id', '3')
     const userJSON = JSON.stringify(user)
     const promise = this.createRequest(this.apiUrl + this.routeUsers, 'post', userJSON)
 

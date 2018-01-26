@@ -1,8 +1,8 @@
-import { Headers, RequestOptions, URLSearchParams} from '@angular/http';
+import { HttpHeaders } from "@angular/common/http";
 
 export class HttpFactory {
     static getRequestOptions(params?) {
-        let headers = new Headers()
+        const headers = new HttpHeaders()
         headers.append('Content-Type', 'application/json')
         // headers.append('X-Requested-With', 'XMLHttpRequest')
         // headers.append('Content-Type', 'application/x-www-form-urlencoded')
@@ -11,7 +11,7 @@ export class HttpFactory {
             headers.append(property, params[property])
         }
 
-        let options = new RequestOptions({ headers: headers })
+        const options = { headers: headers }
 
         return options
     }
