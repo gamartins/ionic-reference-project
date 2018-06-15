@@ -1,35 +1,35 @@
 import { ToastController } from "ionic-angular";
 
 export class ErrorChecker {
-    public static getErrorMessage(error, toastCtlr: ToastController) {
-        console.log(error)
-        
-        let error_message = ''
+  public static getErrorMessage(error, toastCtlr: ToastController) {
+    console.log(error)
 
-        if (error.hasOwnProperty('status'))
-            error_message = this.getStatusCodeErrorMessage(error)
-        else
-            error_message = 'Ocorreu um erro inesperado'
+    let error_message = ''
 
-        toastCtlr.create({
-            message: error_message,
-            position: 'top',
-            duration: 3000
-        }).present()
+    if (error.hasOwnProperty('status'))
+      error_message = this.getStatusCodeErrorMessage(error)
+    else
+      error_message = 'Ocorreu um erro inesperado'
 
-        return error_message
-    }
+    toastCtlr.create({
+      message: error_message,
+      position: 'top',
+      duration: 3000
+    }).present()
 
-    private static getStatusCodeErrorMessage(error) {
-        let errorMessage = ''
+    return error_message
+  }
 
-        errorMessage = (error.status == 401) ? 'Usuário não possui permissão para acessar o recurso' : errorMessage;
-        errorMessage = (error.status == 404) ? 'Não foi possível encontrar o servidor' : errorMessage;
-        errorMessage = (error.status == 422) ? 'Não foi possível prosseguir com a requisição' : errorMessage;
-        errorMessage = (error.status == 500) ? 'Ocorreu um erro inesperado' : errorMessage;
-        
-        errorMessage = (errorMessage == '') ? 'Não foi possível se conectar': errorMessage;
+  private static getStatusCodeErrorMessage(error) {
+    let errorMessage = ''
 
-        return errorMessage
-    }
+    errorMessage = (error.status == 401) ? 'Usuário não possui permissão para acessar o recurso' : errorMessage;
+    errorMessage = (error.status == 404) ? 'Não foi possível encontrar o servidor' : errorMessage;
+    errorMessage = (error.status == 422) ? 'Não foi possível prosseguir com a requisição' : errorMessage;
+    errorMessage = (error.status == 500) ? 'Ocorreu um erro inesperado' : errorMessage;
+
+    errorMessage = (errorMessage == '') ? 'Não foi possível se conectar' : errorMessage;
+
+    return errorMessage
+  }
 }

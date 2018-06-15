@@ -1,72 +1,31 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 import { HttpFactory } from '../util/HttpFactory';
 
-import { environment } from '../environment/environment';
-
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
+import { environmentVars } from '../environment/environment';
 
 @Injectable()
 export class ExampleProvider {
 
-  private apiUrl: string = environment.apiUrl
-  private apiToken: string = ''
+  private apiUrl: string = environmentVars.apiUrl
   private routeUsers: string = 'users'
+  private httpFactory: HttpFactory
 
-  constructor(public http: HttpClient) {}
-
-  private getAuthenticatedRequestOption() {
-    const requestOptions = HttpFactory.getRequestOptions({
-      'Authorization': `Bearer ${this.apiToken}`
-    })
-
-    return requestOptions
+  constructor(private http: HttpClient) {
+    this.httpFactory = new HttpFactory(this.http)
   }
 
-  private createRequest(url: string, method: string, body?) {
-    const headers = this.getAuthenticatedRequestOption()
-    let request: Observable<HttpEvent<any>> = null
-    
-    // Get the full response
-    // headers['observe'] = 'response'
-
-    switch (method) {
-      case 'get':
-        request = this.http.get<any>(url, headers)
-        request = this.http.get<any>(url, headers)
-        break
-
-      case 'post':
-        request = this.http.post<any>(url, body, headers)
-        break
-
-      case 'put':
-        request = this.http.put<any>(url, body, headers)
-        break
-      
-      case 'delete':
-        request = this.http.delete<any>(url, headers)
-        break
-    
-      default:
-        request = null
-        break
-    }
-    
-    const promise = new Promise((resolve, reject) => {
-      request.subscribe(
-        data => resolve(data),
-        error => reject(error)
-      )
-    })
+  public getRequest() {
+    const route = `${this.apiUrl}/${this.routeUsers}`
+    const promise = this.httpFactory.createRequest(route, 'get')
 
     return promise
   }
 
-  public getRequest() {
-    const promise = this.createRequest(this.apiUrl + this.routeUsers, 'get')
+  public getRequestById(id) {
+    const route = `${this.apiUrl}/${this.routeUsers}/${id}`
+    const promise = this.httpFactory.createRequest(route, 'get')
 
     return promise
   }
@@ -74,23 +33,24 @@ export class ExampleProvider {
   public postRequest(user) {
     // Using x-www-form...
     // const userParams = new HttpParams().set('id', '3')
+    const route = `${this.apiUrl}/${this.routeUsers}`
     const userJSON = JSON.stringify(user)
-    const promise = this.createRequest(this.apiUrl + this.routeUsers, 'post', userJSON)
+    const promise = this.httpFactory.createRequest(route, 'post', userJSON)
 
     return promise
   }
 
   public putRequest(userID, user) {
-    const route = `${this.routeUsers}/${userID}`
+    const route = `${this.apiUrl}/${this.routeUsers}/${userID}`
     const userJSON = JSON.stringify(user)
-    const promise = this.createRequest(this.apiUrl + route, 'put', userJSON)
+    const promise = this.httpFactory.createRequest(route, 'put', userJSON)
 
     return promise
   }
 
   public deleteRequest(userID) {
-    const route = `${this.routeUsers}/${userID}`
-    const promise = this.createRequest(this.apiUrl + route, 'delete')
+    const route = `${this.apiUrl}/${this.routeUsers}/${userID}`
+    const promise = this.httpFactory.createRequest(route, 'delete')
 
     return promise
   }
