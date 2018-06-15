@@ -6,10 +6,10 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-
 import { IonicStorageModule } from '@ionic/storage';
 
 import { UserInfoProvider } from '../providers/user-info';
+import { ExampleProvider } from '../providers/example';
 
 import { MyApp } from './app.component';
 
@@ -18,6 +18,7 @@ import { MyApp } from './app.component';
     MyApp
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     HttpClientModule,
     IonicModule.forRoot(MyApp),
@@ -31,7 +32,8 @@ import { MyApp } from './app.component';
     StatusBar,
     SplashScreen,
     UserInfoProvider,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    ExampleProvider,
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
   ]
 })
 export class AppModule {}

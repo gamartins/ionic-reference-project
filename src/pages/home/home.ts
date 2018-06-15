@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
-import { LoginProvider } from '../../providers/login';
+import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
+import { ExampleProvider } from '../../providers/example';
+import { ErrorChecker } from '../../util/ErrorChecker'
 
 @IonicPage()
 @Component({
@@ -11,13 +11,49 @@ import { LoginProvider } from '../../providers/login';
 
 export class HomePage {
 
-  constructor(public navCtrl: NavController, private loginProvider: LoginProvider) {
-
+  constructor(
+    public navCtrl: NavController,
+    public toastCtrl: ToastController,
+    public exampleProvider: ExampleProvider) {
   }
 
-  logout() {
-    this.loginProvider.signout()
-    this.navCtrl.setRoot('LoginPage')
+  getFromAPI() {
+    this.exampleProvider.getRequest()
+    .then((data: any) => console.log(data))
+    .catch(error => ErrorChecker.getErrorMessage(error, this.toastCtrl))
+  }
+
+  postFromAPI() {
+    const user = {
+      username: 'gamartins',
+      email: 'gabriel@email.com',
+      password: '123123'
+    }
+
+    this.exampleProvider.postRequest(user)
+    .then((data: any) => console.log(data))
+    .catch(error => ErrorChecker.getErrorMessage(error, this.toastCtrl))
+  }
+
+  putFromAPI() {
+    const userID = 1
+    const user = {
+      name: 'Gabriel Angelo',
+      email: 'gabriel@email.com',
+      password: '123123'
+    }
+
+    this.exampleProvider.putRequest(userID, user)
+    .then((data: any) => console.log(data))
+    .catch(error => ErrorChecker.getErrorMessage(error, this.toastCtrl))
+  }
+
+  deleteFromAPI() {
+    const userID = 1
+    
+    this.exampleProvider.deleteRequest(userID)
+    .then((data: any) => console.log(data))
+    .catch(error => ErrorChecker.getErrorMessage(error, this.toastCtrl))
   }
 
 }
