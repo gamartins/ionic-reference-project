@@ -11,8 +11,9 @@ export class LoginProvider {
 
   public signup(email, password) {
     if(email == 'gabriel@email.com' && password == '123123') {
-      this.userInfo.saveUserData({ token: 'SomeToken' })
-      return Promise.resolve({ token: 'SomeToken' })
+      const user = { token: 'SomeToken' }
+      this.userInfo.saveUserData(user)
+      return Promise.resolve(user)
     }
     else
       return Promise.reject('Usuário inválido')

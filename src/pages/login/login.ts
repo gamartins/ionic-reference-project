@@ -36,12 +36,9 @@ export class LoginPage {
       this.loading.present()
 
       this.loginProvider.signup(email, password)
-      .then(data => this.navCtrl.setRoot(HomePage))
-      .catch(error => {
-        console.log('Usuário inválido')
-        this.showMessage('Não foi possível realizar login')
-      })
-      .then(() => this.loading.dismiss())
+      .then(data => this.navCtrl.setRoot('HomePage'))
+      .catch(error => this.showMessage(error))
+      .then(() => this.loading.dismiss().catch(() => {}))
     }
   }
 
