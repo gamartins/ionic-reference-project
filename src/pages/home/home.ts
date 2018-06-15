@@ -5,6 +5,7 @@ import { ToastController } from 'ionic-angular/components/toast/toast-controller
 
 import { ErrorChecker } from '../../util/error-checker'
 import { CustomValidators } from '../../util/custom-validators'
+import { FeedbackUser } from '../../util/feedback-user';
 
 @Component({
   selector: 'page-home',
@@ -22,29 +23,31 @@ export class HomePage {
       name: [ '', Validators.required ],
       email: [ '', Validators.compose([ Validators.required, Validators.email ])],
       emailConfirmation: [ '', Validators.compose([ Validators.required, Validators.email ])],
-      password: [ '', Validators.required ],
+      password: [ '', Validators.compose([Validators.required, Validators.minLength(10)]) ],
       passwordConfirmation: [ '', Validators.required ],
       useTerms: [ false , Validators.requiredTrue ]
     }, {
-      validator: [ CustomValidators.matchPassword, CustomValidators.matchEmail]
+      validator: [ CustomValidators.matchPassword, CustomValidators.matchEmail ]
     })
 
   }
 
-  showMessage(message) {
-    this.toastCtrl.create({
-      message: message,
-      duration: 3000,
-      position: 'top'
-    }).present()
+  send(){
+    if(this.isFormInvalid())
+    
+    console.log(this.someForm.value)
   }
 
-  send(){
-    const errors = ErrorChecker.getFormError(this.someForm.controls)
-    
-    if(errors.length == 0)
-      console.log(this.someForm.value)
-    else
-      this.showMessage(errors[0])
+  isFormInvalid() {
+    let isFormInvalid = false
+
+    if(this.someForm.invalid) {
+      const errors = ErrorChecker.getFormError(this.someForm.controls)
+      FeedbackUser.showMessage(this.toastCtrl, errors[0])
+    } else {
+      isFormInvalid = true
+    }
+
+    return isFormInvalid
   }
 }
