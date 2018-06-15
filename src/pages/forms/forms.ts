@@ -8,10 +8,10 @@ import { CustomValidators } from '../../util/custom-validators'
 import { FeedbackUser } from '../../util/feedback-user';
 
 @Component({
-  selector: 'page-home',
-  templateUrl: 'home.html'
+  selector: 'page-forms',
+  templateUrl: 'forms.html'
 })
-export class HomePage {
+export class FormsPage {
   private someForm : FormGroup;
 
   constructor(
